@@ -15,18 +15,40 @@ body {
     font-family: Arial, sans-serif;
     background: #eeeeee;
     margin: 0;
-    padding: 20px;
+    padding: 15px;
     text-align: center;
 }
 
 h1 {
     font-size: 32px;
-    margin-bottom: 10px;
 }
 
 .instruccions {
     font-size: 20px;
-    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+#controls {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #eeeeee;
+    padding: 10px;
+}
+
+.boto {
+    padding: 15px 25px;
+    font-size: 22px;
+    font-weight: bold;
+    border: 3px solid black;
+    border-radius: 10px;
+    margin: 5px;
+    cursor: pointer;
+    background: white;
+}
+
+.boto:active {
+    background: #cccccc;
 }
 
 #contenidor {
@@ -34,7 +56,7 @@ h1 {
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 20px;
     max-width: 1200px;
-    margin: auto;
+    margin: 20px auto;
 }
 
 .targeta {
@@ -62,16 +84,15 @@ h1 {
     backface-visibility: hidden;
     border: 4px solid #222;
     border-radius: 15px;
-    background: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 15px;
+    padding: 12px;
 }
 
 .davant {
-    background: #ffffff;
+    background: white;
 }
 
 .darrere {
@@ -80,12 +101,12 @@ h1 {
 }
 
 .icona {
-    font-size: 95px;
+    font-size: 90px;
     margin-bottom: 15px;
 }
 
 .numero {
-    font-size: 24px;
+    font-size: 23px;
     font-weight: bold;
 }
 
@@ -99,41 +120,32 @@ h1 {
 
 .sillaba {
     background: #d9eaff;
-    border: 3px solid #222;
+    border: 3px solid black;
     border-radius: 10px;
     padding: 12px 15px;
-    font-size: 24px;
+    font-size: 23px;
     font-weight: bold;
     cursor: pointer;
 }
 
 .sillaba.seleccionada {
     background: #b8b8b8;
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: default;
 }
 
 .resposta {
     min-height: 45px;
-    font-size: 23px;
+    font-size: 22px;
     font-weight: bold;
     color: #174d91;
-    margin: 10px 0;
+    margin: 8px 0;
 }
 
-.boto {
-    padding: 14px 25px;
-    font-size: 20px;
+.resultat-card {
+    font-size: 19px;
     font-weight: bold;
-    border: 3px solid #222;
-    border-radius: 10px;
-    margin: 8px;
-    cursor: pointer;
-    background: white;
-}
-
-.boto:hover {
-    background: #dddddd;
+    min-height: 25px;
 }
 
 #resultat {
@@ -162,28 +174,29 @@ h1 {
 TOCA UNA TARGETA, OBSERVA LA IMATGE I ORDENA LES SÍL·LABES.
 </p>
 
-<div id="contenidor"></div>
+<div id="controls">
+    <button class="boto" onclick="corregir()">CORREGIR</button>
+    <button class="boto" onclick="reiniciar()">TORNAR A COMENÇAR</button>
+</div>
 
 <div id="resultat"></div>
 
-<button class="boto" onclick="corregir()">CORREGIR</button>
-<button class="boto" onclick="reiniciar()">TORNAR A COMENÇAR</button>
+<div id="contenidor"></div>
 
 <script>
 
 const partsCasa = [
     {nom:"CA-SA", sillabes:["CA","SA"], icona:"🏠"},
     {nom:"POR-TA", sillabes:["POR","TA"], icona:"🚪"},
-    {nom:"FI-NE-STRA", sillabes:["FI","NE","STRA"], icona:"🪟"},
+    {nom:"FI-NES-TRA", sillabes:["FI","NES","TRA"], icona:"🪟"},
     {nom:"TEU-LAT", sillabes:["TEU","LAT"], icona:"🏡"},
     {nom:"PA-RET", sillabes:["PA","RET"], icona:"🧱"},
-    {nom:"SOS-TRE", sillabes:["SOS","TRE"], icona:"🏠"},
     {nom:"TER-RA", sillabes:["TER","RA"], icona:"⬜"},
     {nom:"PA-VI-MENT", sillabes:["PA","VI","MENT"], icona:"🟫"},
-    {nom:"ES-CA-LES", sillabes:["ES","CA","LES"], icona:"🪜"},
+    {nom:"ES-CA-LA", sillabes:["ES","CA","LA"], icona:"🪜"},
     {nom:"BAL-CÓ", sillabes:["BAL","CÓ"], icona:"🌇"},
-
     {nom:"CU-I-NA", sillabes:["CU","I","NA"], icona:"🍳"},
+
     {nom:"MEN-JA-DOR", sillabes:["MEN","JA","DOR"], icona:"🍽️"},
     {nom:"DOR-MI-TO-RI", sillabes:["DOR","MI","TO","RI"], icona:"🛏️"},
     {nom:"BA-NY", sillabes:["BA","NY"], icona:"🛁"},
@@ -192,44 +205,31 @@ const partsCasa = [
     {nom:"JAR-DÍ", sillabes:["JAR","DÍ"], icona:"🌳"},
     {nom:"EN-TRA-DA", sillabes:["EN","TRA","DA"], icona:"🚪"},
     {nom:"PAS-SA-DÍS", sillabes:["PAS","SA","DÍS"], icona:"🚶"},
-    {nom:"RE-PLA", sillabes:["RE","PLA"], icona:"🪟"},
-
     {nom:"AR-MA-RI", sillabes:["AR","MA","RI"], icona:"🚪"},
     {nom:"TAU-LA", sillabes:["TAU","LA"], icona:"🪑"},
+
     {nom:"CA-DI-RA", sillabes:["CA","DI","RA"], icona:"🪑"},
     {nom:"SO-FÀ", sillabes:["SO","FÀ"], icona:"🛋️"},
     {nom:"LLIT", sillabes:["LLIT"], icona:"🛏️"},
     {nom:"LLUM", sillabes:["LLUM"], icona:"💡"},
-    {nom:"MIRALL", sillabes:["MI","RALL"], icona:"🪞"},
+    {nom:"MI-RALL", sillabes:["MI","RALL"], icona:"🪞"},
     {nom:"COR-TI-NA", sillabes:["COR","TI","NA"], icona:"🪟"},
-    {nom:"CATIFA", sillabes:["CA","TI","FA"], icona:"🟫"},
-    {nom:"POR-TA-LLAUS", sillabes:["POR","TA","LLAUS"], icona:"🔑"},
-
+    {nom:"CA-TI-FA", sillabes:["CA","TI","FA"], icona:"🟫"},
     {nom:"NE-VE-RA", sillabes:["NE","VE","RA"], icona:"🧊"},
-    {nom:"FO-RA-T", sillabes:["FO","RA","T"], icona:"🍴"},
     {nom:"FORN", sillabes:["FORN"], icona:"🔥"},
     {nom:"REN-TA-DO-RA", sillabes:["REN","TA","DO","RA"], icona:"🧺"},
-    {nom:"DU-TXA", sillabes:["DU","TXA"], icona:"🚿"},
+
+    {nom:"DUT-XA", sillabes:["DUT","XA"], icona:"🚿"},
     {nom:"LA-VA-BO", sillabes:["LA","VA","BO"], icona:"🚰"},
     {nom:"IN-O-DOR", sillabes:["IN","O","DOR"], icona:"🚽"},
-    {nom:"BUI-XA", sillabes:["BUI","XA"], icona:"📮"},
+    {nom:"RE-BOST", sillabes:["RE","BOST"], icona:"📦"},
     {nom:"XA-ME-NEI-A", sillabes:["XA","ME","NEI","A"], icona:"🔥"},
-    {nom:"ES-CA-LÓ", sillabes:["ES","CA","LÓ"], icona:"🪜"},
-
     {nom:"TER-RAS-SA", sillabes:["TER","RAS","SA"], icona:"🌞"},
-    {nom:"TE-RRA-SSA", sillabes:["TE","RRA","SSA"], icona:"🌿"},
-    {nom:"RE-BOS", sillabes:["RE","BOS"], icona:"🧱"},
-    {nom:"TE-RRA-T", sillabes:["TE","RRA","T"], icona:"🏡"},
-    {nom:"CE-LER", sillabes:["CE","LER"], icona:"📦"},
     {nom:"SO-TER-RA-NI", sillabes:["SO","TER","RA","NI"], icona:"🚗"},
     {nom:"HA-BI-TA-CI-Ó", sillabes:["HA","BI","TA","CI","Ó"], icona:"🛏️"},
-    {nom:"XA-RAG", sillabes:["XA","RAG"], icona:"🧥"},
-    {nom:"POR-XO", sillabes:["POR","XO"], icona:"🏠"},
-    {nom:"ES-CO-LLI-DA", sillabes:["ES","CO","LLI","DA"], icona:"🏡"}
+    {nom:"ES-CA-LES", sillabes:["ES","CA","LES"], icona:"🪜"},
+    {nom:"POR-XO", sillabes:["POR","XO"], icona:"🏡"}
 ];
-
-let targetaActual = null;
-let respostaActual = [];
 
 function barrejar(array) {
     let copia = [...array];
@@ -237,6 +237,10 @@ function barrejar(array) {
     for (let i = copia.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+
+    if (copia.join("") === array.join("") && copia.length > 1) {
+        [copia[0], copia[1]] = [copia[1], copia[0]];
     }
 
     return copia;
@@ -250,6 +254,9 @@ function crearTargetes() {
 
         const targeta = document.createElement("div");
         targeta.className = "targeta";
+        targeta.dataset.index = index;
+
+        let respostaActual = [];
 
         const interior = document.createElement("div");
         interior.className = "interior";
@@ -266,15 +273,20 @@ function crearTargetes() {
         const darrere = document.createElement("div");
         darrere.className = "darrere";
 
-        const resposta = document.createElement("div");
-        resposta.className = "resposta";
+        const instruccio = document.createElement("div");
+        instruccio.style.fontWeight = "bold";
+        instruccio.textContent = "ORDENA LES SÍL·LABES";
 
         const zonaSillabes = document.createElement("div");
         zonaSillabes.className = "sillabes";
 
-        const sillabesBarrejades = barrejar(part.sillabes);
+        const resposta = document.createElement("div");
+        resposta.className = "resposta";
 
-        sillabesBarrejades.forEach(sillaba => {
+        const resultatCard = document.createElement("div");
+        resultatCard.className = "resultat-card";
+
+        barrejar(part.sillabes).forEach(sillaba => {
             const boto = document.createElement("button");
             boto.className = "sillaba";
             boto.textContent = sillaba;
@@ -287,14 +299,16 @@ function crearTargetes() {
                 boto.classList.add("seleccionada");
                 respostaActual.push(sillaba);
                 resposta.textContent = respostaActual.join("-");
+                resultatCard.textContent = "";
             });
 
             zonaSillabes.appendChild(boto);
         });
 
-        darrere.appendChild(document.createTextNode("ORDENA LES SÍL·LABES"));
+        darrere.appendChild(instruccio);
         darrere.appendChild(zonaSillabes);
         darrere.appendChild(resposta);
+        darrere.appendChild(resultatCard);
 
         interior.appendChild(davant);
         interior.appendChild(darrere);
@@ -302,14 +316,40 @@ function crearTargetes() {
 
         targeta.addEventListener("click", () => {
             targeta.classList.toggle("girada");
+        });
+
+        targeta.dataset.getResposta = "true";
+
+        targeta._resposta = () => respostaActual;
+        targeta._corregir = () => {
+            const correcta = respostaActual.join("-");
+            const resultat = correcta === part.nom;
+
+            if (respostaActual.length === 0) {
+                resultatCard.textContent = "ENCARA NO HAS RESPOST";
+                resultatCard.style.color = "black";
+            } else if (resultat) {
+                resultatCard.textContent = "MOLT BÉ! ✓";
+                resultatCard.style.color = "green";
+            } else {
+                resultatCard.textContent = "TORNA-HO A PROVAR!";
+                resultatCard.style.color = "red";
+            }
+
+            return respostaActual.length > 0 && resultat;
+        };
+
+        targeta._reiniciar = () => {
             respostaActual = [];
             resposta.textContent = "";
-            targetaActual = targeta;
+            resultatCard.textContent = "";
 
             zonaSillabes.querySelectorAll(".sillaba").forEach(boto => {
                 boto.classList.remove("seleccionada");
             });
-        });
+
+            targeta.classList.remove("girada");
+        };
 
         contenidor.appendChild(targeta);
     });
@@ -320,40 +360,36 @@ function corregir() {
     let correctes = 0;
     let contestades = 0;
 
-    targetes.forEach((targeta, index) => {
+    targetes.forEach(targeta => {
         if (!targeta.classList.contains("girada")) return;
 
-        const resposta = targeta.querySelector(".resposta");
-        const respostaUsuari = resposta.textContent;
-        const respostaCorrecta = partsCasa[index].nom;
-
-        if (respostaUsuari !== "") {
+        if (targeta._resposta().length > 0) {
             contestades++;
 
-            if (respostaUsuari === respostaCorrecta) {
+            if (targeta._corregir()) {
                 correctes++;
-                resposta.style.color = "green";
-                resposta.textContent = "MOLT BÉ! ✓";
-            } else {
-                resposta.style.color = "red";
-                resposta.textContent = "TORNA-HO A PROVAR!";
             }
         }
     });
 
-    document.getElementById("resultat").textContent =
-        "RESULTAT: " + correctes + " DE " + contestades + " CORRECTES";
+    const resultat = document.getElementById("resultat");
+
+    if (contestades === 0) {
+        resultat.textContent = "GIRA UNA TARGETA I ORDENA LES SÍL·LABES!";
+    } else {
+        resultat.textContent =
+            "RESULTAT: " + correctes + " DE " + contestades + " CORRECTES";
+    }
 }
 
 function reiniciar() {
     document.getElementById("resultat").textContent = "";
-    respostaActual = [];
-    targetaActual = null;
     crearTargetes();
 }
 
 crearTargetes();
 
 </script>
+
 </body>
 </html>
