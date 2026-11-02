@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LES PARTS DE LA CASA</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #eeeeee;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.instruccions {
+    font-size: 20px;
+    margin-bottom: 25px;
+}
+
+#contenidor {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.targeta {
+    height: 290px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.interior {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.targeta.girada .interior {
+    transform: rotateY(180deg);
+}
+
+.davant, .darrere {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border: 4px solid #222;
+    border-radius: 15px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.davant {
+    background: #ffffff;
+}
+
+.darrere {
+    transform: rotateY(180deg);
+    background: #fff7dc;
+}
+
+.icona {
+    font-size: 95px;
+    margin-bottom: 15px;
+}
+
+.numero {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.sillabes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.sillaba {
+    background: #d9eaff;
+    border: 3px solid #222;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.sillaba.seleccionada {
+    background: #b8b8b8;
+    opacity: 0.5;
+    cursor: default;
+}
+
+.resposta {
+    min-height: 45px;
+    font-size: 23px;
+    font-weight: bold;
+    color: #174d91;
+    margin: 10px 0;
+}
+
+.boto {
+    padding: 14px 25px;
+    font-size: 20px;
+    font-weight: bold;
+    border: 3px solid #222;
+    border-radius: 10px;
+    margin: 8px;
+    cursor: pointer;
+    background: white;
+}
+
+.boto:hover {
+    background: #dddddd;
+}
+
+#resultat {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 20px;
+}
+
+@media (max-width: 500px) {
+    h1 {
+        font-size: 25px;
+    }
+
+    #contenidor {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>LES PARTS DE LA CASA</h1>
+
+<p class="instruccions">
+TOCA UNA TARGETA, OBSERVA LA IMATGE I ORDENA LES SÍL·LABES.
+</p>
+
+<div id="contenidor"></div>
+
+<div id="resultat"></div>
+
+<button class="boto" onclick="corregir()">CORREGIR</button>
+<button class="boto" onclick="reiniciar()">TORNAR A COMENÇAR</button>
+
+<script>
+
+const partsCasa = [
+    {nom:"CA-SA", sillabes:["CA","SA"], icona:"🏠"},
+    {nom:"POR-TA", sillabes:["POR","TA"], icona:"🚪"},
+    {nom:"FI-NE-STRA", sillabes:["FI","NE","STRA"], icona:"🪟"},
+    {nom:"TEU-LAT", sillabes:["TEU","LAT"], icona:"🏡"},
+    {nom:"PA-RET", sillabes:["PA","RET"], icona:"🧱"},
+    {nom:"SOS-TRE", sillabes:["SOS","TRE"], icona:"🏠"},
+    {nom:"TER-RA", sillabes:["TER","RA"], icona:"⬜"},
+    {nom:"PA-VI-MENT", sillabes:["PA","VI","MENT"], icona:"🟫"},
+    {nom:"ES-CA-LES", sillabes:["ES","CA","LES"], icona:"🪜"},
+    {nom:"BAL-CÓ", sillabes:["BAL","CÓ"], icona:"🌇"},
+
+    {nom:"CU-I-NA", sillabes:["CU","I","NA"], icona:"🍳"},
+    {nom:"MEN-JA-DOR", sillabes:["MEN","JA","DOR"], icona:"🍽️"},
+    {nom:"DOR-MI-TO-RI", sillabes:["DOR","MI","TO","RI"], icona:"🛏️"},
+    {nom:"BA-NY", sillabes:["BA","NY"], icona:"🛁"},
+    {nom:"SA-LA", sillabes:["SA","LA"], icona:"🛋️"},
+    {nom:"GA-RAT-GE", sillabes:["GA","RAT","GE"], icona:"🚗"},
+    {nom:"JAR-DÍ", sillabes:["JAR","DÍ"], icona:"🌳"},
+    {nom:"EN-TRA-DA", sillabes:["EN","TRA","DA"], icona:"🚪"},
+    {nom:"PAS-SA-DÍS", sillabes:["PAS","SA","DÍS"], icona:"🚶"},
+    {nom:"RE-PLA", sillabes:["RE","PLA"], icona:"🪟"},
+
+    {nom:"AR-MA-RI", sillabes:["AR","MA","RI"], icona:"🚪"},
+    {nom:"TAU-LA", sillabes:["TAU","LA"], icona:"🪑"},
+    {nom:"CA-DI-RA", sillabes:["CA","DI","RA"], icona:"🪑"},
+    {nom:"SO-FÀ", sillabes:["SO","FÀ"], icona:"🛋️"},
+    {nom:"LLIT", sillabes:["LLIT"], icona:"🛏️"},
+    {nom:"LLUM", sillabes:["LLUM"], icona:"💡"},
+    {nom:"MIRALL", sillabes:["MI","RALL"], icona:"🪞"},
+    {nom:"COR-TI-NA", sillabes:["COR","TI","NA"], icona:"🪟"},
+    {nom:"CATIFA", sillabes:["CA","TI","FA"], icona:"🟫"},
+    {nom:"POR-TA-LLAUS", sillabes:["POR","TA","LLAUS"], icona:"🔑"},
+
+    {nom:"NE-VE-RA", sillabes:["NE","VE","RA"], icona:"🧊"},
+    {nom:"FO-RA-T", sillabes:["FO","RA","T"], icona:"🍴"},
+    {nom:"FORN", sillabes:["FORN"], icona:"🔥"},
+    {nom:"REN-TA-DO-RA", sillabes:["REN","TA","DO","RA"], icona:"🧺"},
+    {nom:"DU-TXA", sillabes:["DU","TXA"], icona:"🚿"},
+    {nom:"LA-VA-BO", sillabes:["LA","VA","BO"], icona:"🚰"},
+    {nom:"IN-O-DOR", sillabes:["IN","O","DOR"], icona:"🚽"},
+    {nom:"BUI-XA", sillabes:["BUI","XA"], icona:"📮"},
+    {nom:"XA-ME-NEI-A", sillabes:["XA","ME","NEI","A"], icona:"🔥"},
+    {nom:"ES-CA-LÓ", sillabes:["ES","CA","LÓ"], icona:"🪜"},
+
+    {nom:"TER-RAS-SA", sillabes:["TER","RAS","SA"], icona:"🌞"},
+    {nom:"TE-RRA-SSA", sillabes:["TE","RRA","SSA"], icona:"🌿"},
+    {nom:"RE-BOS", sillabes:["RE","BOS"], icona:"🧱"},
+    {nom:"TE-RRA-T", sillabes:["TE","RRA","T"], icona:"🏡"},
+    {nom:"CE-LER", sillabes:["CE","LER"], icona:"📦"},
+    {nom:"SO-TER-RA-NI", sillabes:["SO","TER","RA","NI"], icona:"🚗"},
+    {nom:"HA-BI-TA-CI-Ó", sillabes:["HA","BI","TA","CI","Ó"], icona:"🛏️"},
+    {nom:"XA-RAG", sillabes:["XA","RAG"], icona:"🧥"},
+    {nom:"POR-XO", sillabes:["POR","XO"], icona:"🏠"},
+    {nom:"ES-CO-LLI-DA", sillabes:["ES","CO","LLI","DA"], icona:"🏡"}
+];
+
+let targetaActual = null;
+let respostaActual = [];
+
+function barrejar(array) {
+    let copia = [...array];
+
+    for (let i = copia.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+
+    return copia;
+}
+
+function crearTargetes() {
+    const contenidor = document.getElementById("contenidor");
+    contenidor.innerHTML = "";
+
+    partsCasa.forEach((part, index) => {
+
+        const targeta = document.createElement("div");
+        targeta.className = "targeta";
+
+        const interior = document.createElement("div");
+        interior.className = "interior";
+
+        const davant = document.createElement("div");
+        davant.className = "davant";
+
+        davant.innerHTML = `
+            <div class="icona">${part.icona}</div>
+            <div class="numero">TARGETA ${index + 1}</div>
+            <p>TOCA PER GIRAR</p>
+        `;
+
+        const darrere = document.createElement("div");
+        darrere.className = "darrere";
+
+        const resposta = document.createElement("div");
+        resposta.className = "resposta";
+
+        const zonaSillabes = document.createElement("div");
+        zonaSillabes.className = "sillabes";
+
+        const sillabesBarrejades = barrejar(part.sillabes);
+
+        sillabesBarrejades.forEach(sillaba => {
+            const boto = document.createElement("button");
+            boto.className = "sillaba";
+            boto.textContent = sillaba;
+
+            boto.addEventListener("click", (event) => {
+                event.stopPropagation();
+
+                if (boto.classList.contains("seleccionada")) return;
+
+                boto.classList.add("seleccionada");
+                respostaActual.push(sillaba);
+                resposta.textContent = respostaActual.join("-");
+            });
+
+            zonaSillabes.appendChild(boto);
+        });
+
+        darrere.appendChild(document.createTextNode("ORDENA LES SÍL·LABES"));
+        darrere.appendChild(zonaSillabes);
+        darrere.appendChild(resposta);
+
+        interior.appendChild(davant);
+        interior.appendChild(darrere);
+        targeta.appendChild(interior);
+
+        targeta.addEventListener("click", () => {
+            targeta.classList.toggle("girada");
+            respostaActual = [];
+            resposta.textContent = "";
+            targetaActual = targeta;
+
+            zonaSillabes.querySelectorAll(".sillaba").forEach(boto => {
+                boto.classList.remove("seleccionada");
+            });
+        });
+
+        contenidor.appendChild(targeta);
+    });
+}
+
+function corregir() {
+    const targetes = document.querySelectorAll(".targeta");
+    let correctes = 0;
+    let contestades = 0;
+
+    targetes.forEach((targeta, index) => {
+        if (!targeta.classList.contains("girada")) return;
+
+        const resposta = targeta.querySelector(".resposta");
+        const respostaUsuari = resposta.textContent;
+        const respostaCorrecta = partsCasa[index].nom;
+
+        if (respostaUsuari !== "") {
+            contestades++;
+
+            if (respostaUsuari === respostaCorrecta) {
+                correctes++;
+                resposta.style.color = "green";
+                resposta.textContent = "MOLT BÉ! ✓";
+            } else {
+                resposta.style.color = "red";
+                resposta.textContent = "TORNA-HO A PROVAR!";
+            }
+        }
+    });
+
+    document.getElementById("resultat").textContent =
+        "RESULTAT: " + correctes + " DE " + contestades + " CORRECTES";
+}
+
+function reiniciar() {
+    document.getElementById("resultat").textContent = "";
+    respostaActual = [];
+    targetaActual = null;
+    crearTargetes();
+}
+
+crearTargetes();
+
+</script>
+</body>
+</html>
