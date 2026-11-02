@@ -4,390 +4,432 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LES PARTS DE LA CASA</title>
+<title>Ordenem les síl·labes de la casa</title>
 
 <style>
-* {
-    box-sizing: border-box;
+:root {
+    --fons: #f4f6f8;
+    --text: #17202a;
+    --blau: #175cd3;
+    --verd: #16794b;
+    --vermell: #b42318;
+    --vora: #c8d0d9;
 }
 
+* { box-sizing: border-box; }
+
 body {
-    font-family: Arial, sans-serif;
-    background: #eeeeee;
     margin: 0;
-    padding: 15px;
+    padding: 24px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--fons);
+    color: var(--text);
     text-align: center;
 }
 
 h1 {
-    font-size: 32px;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    margin: 0 0 10px;
 }
 
 .instruccions {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 1.15rem;
+    margin: 0 auto 24px;
+    max-width: 720px;
+    line-height: 1.5;
 }
 
-#controls {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #eeeeee;
-    padding: 10px;
-}
-
-.boto {
-    padding: 15px 25px;
-    font-size: 22px;
-    font-weight: bold;
-    border: 3px solid black;
-    border-radius: 10px;
-    margin: 5px;
-    cursor: pointer;
-    background: white;
-}
-
-.boto:active {
-    background: #cccccc;
-}
-
-#contenidor {
+.targetes {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 20px;
-    max-width: 1200px;
-    margin: 20px auto;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 22px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.targeta-contenidor {
+    perspective: 1000px;
 }
 
 .targeta {
-    height: 290px;
-    perspective: 1000px;
-    cursor: pointer;
-}
-
-.interior {
     position: relative;
     width: 100%;
-    height: 100%;
-    transition: transform 0.6s;
+    min-height: 390px;
+    border: 3px solid var(--vora);
+    border-radius: 18px;
+    background: white;
+    cursor: pointer;
     transform-style: preserve-3d;
+    transition: transform 0.55s;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
 }
 
-.targeta.girada .interior {
+.targeta.girada {
     transform: rotateY(180deg);
 }
 
-.davant, .darrere {
+.cara {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border: 4px solid #222;
-    border-radius: 15px;
+    inset: 0;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 12px;
+    gap: 14px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 15px;
 }
 
-.davant {
-    background: white;
-}
+.davant { background: #fff; }
 
 .darrere {
     transform: rotateY(180deg);
-    background: #fff7dc;
+    background: #fff;
 }
 
-.icona {
-    font-size: 90px;
-    margin-bottom: 15px;
+.icona-casa {
+    font-size: 7rem;
+    line-height: 1.3;
 }
 
-.numero {
-    font-size: 23px;
+.nom-casa {
+    font-size: 1.4rem;
     font-weight: bold;
+}
+
+.pista {
+    font-size: 1rem;
+    color: #475467;
 }
 
 .sillabes {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px;
-    margin: 15px 0;
+    gap: 10px;
+    min-height: 58px;
 }
 
-.sillaba {
-    background: #d9eaff;
-    border: 3px solid black;
+.sil·laba {
+    border: 2px solid #98a2b3;
     border-radius: 10px;
+    background: #f8fafc;
     padding: 12px 15px;
-    font-size: 23px;
+    min-width: 58px;
+    font-size: 1.25rem;
     font-weight: bold;
     cursor: pointer;
+    color: var(--text);
 }
 
-.sillaba.seleccionada {
-    background: #b8b8b8;
-    opacity: 0.4;
+.sil·laba:focus-visible,
+button:focus-visible,
+.targeta:focus-visible {
+    outline: 4px solid #fdb022;
+    outline-offset: 3px;
+}
+
+.sil·laba.seleccionada {
+    background: #dbeafe;
+    border-color: var(--blau);
+    opacity: 0.5;
     cursor: default;
 }
 
 .resposta {
-    min-height: 45px;
-    font-size: 22px;
+    min-height: 44px;
+    width: 100%;
+    padding: 10px;
+    border: 2px dashed #98a2b3;
+    border-radius: 10px;
+    font-size: 1.2rem;
     font-weight: bold;
-    color: #174d91;
-    margin: 8px 0;
+    letter-spacing: 1px;
 }
 
-.resultat-card {
-    font-size: 19px;
-    font-weight: bold;
-    min-height: 25px;
+.botons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
-#resultat {
-    font-size: 25px;
+button.accio {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 17px;
+    font-size: 1rem;
     font-weight: bold;
-    margin: 20px;
+    cursor: pointer;
 }
 
-@media (max-width: 500px) {
-    h1 {
-        font-size: 25px;
-    }
+.corregir {
+    background: var(--blau);
+    color: white;
+}
 
-    #contenidor {
-        grid-template-columns: 1fr;
-    }
+.esborrar {
+    background: #e4e7ec;
+    color: #17202a;
+}
+
+.missatge {
+    min-height: 28px;
+    font-size: 1.05rem;
+    font-weight: bold;
+}
+
+.correcte { color: var(--verd); }
+.incorrecte { color: var(--vermell); }
+
+.nota {
+    margin-top: 22px;
+    color: #475467;
+    font-size: .95rem;
+}
+
+@media (max-width: 520px) {
+    body { padding: 14px; }
+    .targeta { min-height: 370px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .targeta { transition: none; }
 }
 </style>
 </head>
 
 <body>
 
-<h1>LES PARTS DE LA CASA</h1>
+<h1>ORDENEM LES SÍL·LABES DE LA CASA!</h1>
 
 <p class="instruccions">
-TOCA UNA TARGETA, OBSERVA LA IMATGE I ORDENA LES SÍL·LABES.
+1. GIRA UNA TARGETA PER VEURE LES SÍL·LABES.<br>
+2. PREM LES SÍL·LABES EN L'ORDRE CORRECTE.<br>
+3. PREM <strong>CORREGIR</strong> PER COMPROVAR LA RESPOSTA.
 </p>
 
-<div id="controls">
-    <button class="boto" onclick="corregir()">CORREGIR</button>
-    <button class="boto" onclick="reiniciar()">TORNAR A COMENÇAR</button>
-</div>
+<main class="targetes" id="targetes"></main>
 
-<div id="resultat"></div>
-
-<div id="contenidor"></div>
+<p class="nota">
+SI T'EQUIVOQUES, PREM «TORNAR A COMENÇAR» I PROVA-HO DE NOU.
+</p>
 
 <script>
 
+// LLISTA DE LES 40 PARTS I ELEMENTS DE LA CASA
+
 const partsCasa = [
-    {nom:"CA-SA", sillabes:["CA","SA"], icona:"🏠"},
-    {nom:"POR-TA", sillabes:["POR","TA"], icona:"🚪"},
-    {nom:"FI-NES-TRA", sillabes:["FI","NES","TRA"], icona:"🪟"},
-    {nom:"TEU-LAT", sillabes:["TEU","LAT"], icona:"🏡"},
-    {nom:"PA-RET", sillabes:["PA","RET"], icona:"🧱"},
-    {nom:"TER-RA", sillabes:["TER","RA"], icona:"⬜"},
-    {nom:"PA-VI-MENT", sillabes:["PA","VI","MENT"], icona:"🟫"},
-    {nom:"ES-CA-LA", sillabes:["ES","CA","LA"], icona:"🪜"},
-    {nom:"BAL-CÓ", sillabes:["BAL","CÓ"], icona:"🌇"},
-    {nom:"CU-I-NA", sillabes:["CU","I","NA"], icona:"🍳"},
 
-    {nom:"MEN-JA-DOR", sillabes:["MEN","JA","DOR"], icona:"🍽️"},
-    {nom:"DOR-MI-TO-RI", sillabes:["DOR","MI","TO","RI"], icona:"🛏️"},
-    {nom:"BA-NY", sillabes:["BA","NY"], icona:"🛁"},
-    {nom:"SA-LA", sillabes:["SA","LA"], icona:"🛋️"},
-    {nom:"GA-RAT-GE", sillabes:["GA","RAT","GE"], icona:"🚗"},
-    {nom:"JAR-DÍ", sillabes:["JAR","DÍ"], icona:"🌳"},
-    {nom:"EN-TRA-DA", sillabes:["EN","TRA","DA"], icona:"🚪"},
-    {nom:"PAS-SA-DÍS", sillabes:["PAS","SA","DÍS"], icona:"🚶"},
-    {nom:"AR-MA-RI", sillabes:["AR","MA","RI"], icona:"🚪"},
-    {nom:"TAU-LA", sillabes:["TAU","LA"], icona:"🪑"},
+    {nom:"CA-SA", sillabes:["CA","SA"], icona:"🏠", alt:"Casa"},
+    {nom:"POR-TA", sillabes:["POR","TA"], icona:"🚪", alt:"Porta"},
+    {nom:"FI-NES-TRA", sillabes:["FI","NES","TRA"], icona:"🪟", alt:"Finestra"},
+    {nom:"TEU-LA-DA", sillabes:["TEU","LA","DA"], icona:"🏡", alt:"Teulada"},
+    {nom:"PA-RET", sillabes:["PA","RET"], icona:"🧱", alt:"Paret"},
+    {nom:"SOS-TRE", sillabes:["SOS","TRE"], icona:"🏠", alt:"Sostre"},
+    {nom:"TER-RA", sillabes:["TER","RA"], icona:"⬜", alt:"Terra"},
+    {nom:"PAS-SA-DÍS", sillabes:["PAS","SA","DÍS"], icona:"🚶", alt:"Passadís"},
+    {nom:"ES-CA-LA", sillabes:["ES","CA","LA"], icona:"🪜", alt:"Escala"},
+    {nom:"BAL-CÓ", sillabes:["BAL","CÓ"], icona:"🌇", alt:"Balcó"},
 
-    {nom:"CA-DI-RA", sillabes:["CA","DI","RA"], icona:"🪑"},
-    {nom:"SO-FÀ", sillabes:["SO","FÀ"], icona:"🛋️"},
-    {nom:"LLIT", sillabes:["LLIT"], icona:"🛏️"},
-    {nom:"LLUM", sillabes:["LLUM"], icona:"💡"},
-    {nom:"MI-RALL", sillabes:["MI","RALL"], icona:"🪞"},
-    {nom:"COR-TI-NA", sillabes:["COR","TI","NA"], icona:"🪟"},
-    {nom:"CA-TI-FA", sillabes:["CA","TI","FA"], icona:"🟫"},
-    {nom:"NE-VE-RA", sillabes:["NE","VE","RA"], icona:"🧊"},
-    {nom:"FORN", sillabes:["FORN"], icona:"🔥"},
-    {nom:"REN-TA-DO-RA", sillabes:["REN","TA","DO","RA"], icona:"🧺"},
+    {nom:"TER-RAS-SA", sillabes:["TER","RAS","SA"], icona:"🌞", alt:"Terrassa"},
+    {nom:"JAR-DÍ", sillabes:["JAR","DÍ"], icona:"🌳", alt:"Jardí"},
+    {nom:"CU-I-NA", sillabes:["CU","I","NA"], icona:"🍳", alt:"Cuina"},
+    {nom:"MEN-JA-DOR", sillabes:["MEN","JA","DOR"], icona:"🍽️", alt:"Menjador"},
+    {nom:"DOR-MI-TO-RI", sillabes:["DOR","MI","TO","RI"], icona:"🛏️", alt:"Dormitori"},
+    {nom:"BA-NY", sillabes:["BA","NY"], icona:"🛁", alt:"Bany"},
+    {nom:"SA-LA", sillabes:["SA","LA"], icona:"🛋️", alt:"Sala"},
+    {nom:"GA-RAT-GE", sillabes:["GA","RAT","GE"], icona:"🚗", alt:"Garatge"},
+    {nom:"EN-TRA-DA", sillabes:["EN","TRA","DA"], icona:"🚪", alt:"Entrada"},
+    {nom:"RE-BOST", sillabes:["RE","BOST"], icona:"📦", alt:"Rebost"},
 
-    {nom:"DUT-XA", sillabes:["DUT","XA"], icona:"🚿"},
-    {nom:"LA-VA-BO", sillabes:["LA","VA","BO"], icona:"🚰"},
-    {nom:"IN-O-DOR", sillabes:["IN","O","DOR"], icona:"🚽"},
-    {nom:"RE-BOST", sillabes:["RE","BOST"], icona:"📦"},
-    {nom:"XA-ME-NEI-A", sillabes:["XA","ME","NEI","A"], icona:"🔥"},
-    {nom:"TER-RAS-SA", sillabes:["TER","RAS","SA"], icona:"🌞"},
-    {nom:"SO-TER-RA-NI", sillabes:["SO","TER","RA","NI"], icona:"🚗"},
-    {nom:"HA-BI-TA-CI-Ó", sillabes:["HA","BI","TA","CI","Ó"], icona:"🛏️"},
-    {nom:"ES-CA-LES", sillabes:["ES","CA","LES"], icona:"🪜"},
-    {nom:"POR-XO", sillabes:["POR","XO"], icona:"🏡"}
+    {nom:"ES-TU-DI", sillabes:["ES","TU","DI"], icona:"📚", alt:"Estudi"},
+    {nom:"SA-FA-REIG", sillabes:["SA","FA","REIG"], icona:"🧺", alt:"Safareig"},
+    {nom:"AR-MA-RI", sillabes:["AR","MA","RI"], icona:"🚪", alt:"Armari"},
+    {nom:"TAU-LA", sillabes:["TAU","LA"], icona:"🪑", alt:"Taula"},
+    {nom:"CA-DI-RA", sillabes:["CA","DI","RA"], icona:"🪑", alt:"Cadira"},
+    {nom:"SO-FÀ", sillabes:["SO","FÀ"], icona:"🛋️", alt:"Sofà"},
+    {nom:"LLIT", sillabes:["LLIT"], icona:"🛏️", alt:"Llit"},
+    {nom:"LLUM", sillabes:["LLUM"], icona:"💡", alt:"Llum"},
+    {nom:"MI-RALL", sillabes:["MI","RALL"], icona:"🪞", alt:"Mirall"},
+    {nom:"COR-TI-NA", sillabes:["COR","TI","NA"], icona:"🪟", alt:"Cortina"},
+
+    {nom:"CA-TI-FA", sillabes:["CA","TI","FA"], icona:"🟫", alt:"Catifa"},
+    {nom:"NE-VE-RA", sillabes:["NE","VE","RA"], icona:"🧊", alt:"Nevera"},
+    {nom:"FORN", sillabes:["FORN"], icona:"🔥", alt:"Forn"},
+    {nom:"REN-TA-DO-RA", sillabes:["REN","TA","DO","RA"], icona:"🧺", alt:"Rentadora"},
+    {nom:"DUT-XA", sillabes:["DUT","XA"], icona:"🚿", alt:"Dutxa"},
+    {nom:"LA-VA-BO", sillabes:["LA","VA","BO"], icona:"🚰", alt:"Lavabo"},
+    {nom:"VÀ-TER", sillabes:["VÀ","TER"], icona:"🚽", alt:"Vàter"},
+    {nom:"PRE-STAT-GE", sillabes:["PRE","STAT","GE"], icona:"📚", alt:"Prestatge"},
+    {nom:"XE-ME-NEI-A", sillabes:["XE","ME","NEI","A"], icona:"🔥", alt:"Xemeneia"},
+    {nom:"HA-BI-TA-CI-Ó", sillabes:["HA","BI","TA","CI","Ó"], icona:"🛏️", alt:"Habitació"}
+
 ];
 
-function barrejar(array) {
-    let copia = [...array];
+// BARREJA LES SÍL·LABES
+
+function barreja(llista) {
+    const copia = [...llista];
 
     for (let i = copia.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(Math.random() * (i + 1));
         [copia[i], copia[j]] = [copia[j], copia[i]];
     }
 
-    if (copia.join("") === array.join("") && copia.length > 1) {
-        [copia[0], copia[1]] = [copia[1], copia[0]];
+    if (copia.length > 1 && copia.every((s, i) => s === llista[i])) {
+        copia.push(copia.shift());
     }
 
     return copia;
 }
 
-function crearTargetes() {
-    const contenidor = document.getElementById("contenidor");
-    contenidor.innerHTML = "";
+const contenidor = document.getElementById("targetes");
 
-    partsCasa.forEach((part, index) => {
+// CREA LES TARGETES
 
-        const targeta = document.createElement("div");
-        targeta.className = "targeta";
-        targeta.dataset.index = index;
+partsCasa.forEach((part) => {
 
-        let respostaActual = [];
+    const correcte = part.sillabes.join("");
+    const desordenades = barreja(part.sillabes);
 
-        const interior = document.createElement("div");
-        interior.className = "interior";
+    const envoltori = document.createElement("section");
+    envoltori.className = "targeta-contenidor";
 
-        const davant = document.createElement("div");
-        davant.className = "davant";
+    envoltori.innerHTML = `
+        <div class="targeta" tabindex="0" role="button"
+             aria-label="Gira la targeta de ${part.alt}"
+             aria-pressed="false">
 
-        davant.innerHTML = `
-            <div class="icona">${part.icona}</div>
-            <div class="numero">TARGETA ${index + 1}</div>
-            <p>TOCA PER GIRAR</p>
-        `;
+            <div class="cara davant">
+                <div class="icona-casa" aria-hidden="true">${part.icona}</div>
+                <div class="nom-casa">QUINA PART DE LA CASA ÉS?</div>
+                <div class="pista">PREM LA TARGETA PER GIRAR-LA</div>
+            </div>
 
-        const darrere = document.createElement("div");
-        darrere.className = "darrere";
+            <div class="cara darrere">
+                <div class="nom-casa">ORDENA LES SÍL·LABES</div>
+                <div class="sillabes"></div>
+                <div class="resposta"></div>
 
-        const instruccio = document.createElement("div");
-        instruccio.style.fontWeight = "bold";
-        instruccio.textContent = "ORDENA LES SÍL·LABES";
+                <div class="botons">
+                    <button class="accio corregir" type="button">CORREGIR</button>
+                    <button class="accio esborrar" type="button">TORNAR A COMENÇAR</button>
+                </div>
 
-        const zonaSillabes = document.createElement("div");
-        zonaSillabes.className = "sillabes";
+                <div class="missatge" aria-live="polite"></div>
+            </div>
+        </div>
+    `;
 
-        const resposta = document.createElement("div");
-        resposta.className = "resposta";
+    const targeta = envoltori.querySelector(".targeta");
+    const zonaSillabes = envoltori.querySelector(".sillabes");
+    const resposta = envoltori.querySelector(".resposta");
+    const missatge = envoltori.querySelector(".missatge");
 
-        const resultatCard = document.createElement("div");
-        resultatCard.className = "resultat-card";
+    let triades = [];
 
-        barrejar(part.sillabes).forEach(sillaba => {
+    function actualitzaResposta() {
+        resposta.textContent = triades.map(s => s.text).join(" · ");
+    }
+
+    function pintaSillabes() {
+        zonaSillabes.innerHTML = "";
+
+        desordenades.forEach((sillaba, i) => {
             const boto = document.createElement("button");
-            boto.className = "sillaba";
+
+            boto.type = "button";
+            boto.className = "sil·laba";
             boto.textContent = sillaba;
 
             boto.addEventListener("click", (event) => {
                 event.stopPropagation();
 
-                if (boto.classList.contains("seleccionada")) return;
+                if (boto.disabled) return;
 
+                triades.push({text: sillaba, id: i});
+
+                boto.disabled = true;
                 boto.classList.add("seleccionada");
-                respostaActual.push(sillaba);
-                resposta.textContent = respostaActual.join("-");
-                resultatCard.textContent = "";
+
+                actualitzaResposta();
+
+                missatge.textContent = "";
+                missatge.className = "missatge";
             });
 
             zonaSillabes.appendChild(boto);
         });
+    }
 
-        darrere.appendChild(instruccio);
-        darrere.appendChild(zonaSillabes);
-        darrere.appendChild(resposta);
-        darrere.appendChild(resultatCard);
+    function reinicia() {
+        triades = [];
+        actualitzaResposta();
 
-        interior.appendChild(davant);
-        interior.appendChild(darrere);
-        targeta.appendChild(interior);
+        missatge.textContent = "";
+        missatge.className = "missatge";
 
-        targeta.addEventListener("click", () => {
-            targeta.classList.toggle("girada");
-        });
+        pintaSillabes();
+    }
 
-        targeta.dataset.getResposta = "true";
+    // GIRAR LA TARGETA
 
-        targeta._resposta = () => respostaActual;
-        targeta._corregir = () => {
-            const correcta = respostaActual.join("-");
-            const resultat = correcta === part.nom;
+    targeta.addEventListener("click", (event) => {
+        if (event.target.closest("button")) return;
 
-            if (respostaActual.length === 0) {
-                resultatCard.textContent = "ENCARA NO HAS RESPOST";
-                resultatCard.style.color = "black";
-            } else if (resultat) {
-                resultatCard.textContent = "MOLT BÉ! ✓";
-                resultatCard.style.color = "green";
-            } else {
-                resultatCard.textContent = "TORNA-HO A PROVAR!";
-                resultatCard.style.color = "red";
-            }
+        targeta.classList.toggle("girada");
 
-            return respostaActual.length > 0 && resultat;
-        };
-
-        targeta._reiniciar = () => {
-            respostaActual = [];
-            resposta.textContent = "";
-            resultatCard.textContent = "";
-
-            zonaSillabes.querySelectorAll(".sillaba").forEach(boto => {
-                boto.classList.remove("seleccionada");
-            });
-
-            targeta.classList.remove("girada");
-        };
-
-        contenidor.appendChild(targeta);
+        targeta.setAttribute(
+            "aria-pressed",
+            targeta.classList.contains("girada") ? "true" : "false"
+        );
     });
-}
 
-function corregir() {
-    const targetes = document.querySelectorAll(".targeta");
-    let correctes = 0;
-    let contestades = 0;
+    targeta.addEventListener("keydown", (event) => {
+        if (
+            (event.key === "Enter" || event.key === " ") &&
+            !event.target.closest("button")
+        ) {
+            event.preventDefault();
+            targeta.classList.toggle("girada");
 
-    targetes.forEach(targeta => {
-        if (!targeta.classList.contains("girada")) return;
-
-        if (targeta._resposta().length > 0) {
-            contestades++;
-
-            if (targeta._corregir()) {
-                correctes++;
-            }
+            targeta.setAttribute(
+                "aria-pressed",
+                targeta.classList.contains("girada") ? "true" : "false"
+            );
         }
     });
 
-    const resultat = document.getElementById("resultat");
+    // CORREGIR LA RESPOSTA D'AQUESTA TARGETA
 
-    if (contestades === 0) {
-        resultat.textContent = "GIRA UNA TARGETA I ORDENA LES SÍL·LABES!";
-    } else {
-        resultat.textContent =
-            "RESULTAT: " + correctes + " DE " + contestades + " CORRECTES";
-    }
-}
+    envoltori.querySelector(".corregir").addEventListener("click", (event) => {
+        event.stopPropagation();
 
-function reiniciar() {
-    document.getElementById("resultat").textContent = "";
-    crearTargetes();
-}
+        const respostaUsuari = triades.map(s => s.text).join("");
 
-crearTargetes();
+        if (respostaUsuari === correcte) {
+            missatge.textContent = "MOLT BÉ! RESPOSTA CORRECTA!";
+            missatge.className = "missatge correcte";
+        } else {
+            missatge.textContent = "ENCARA NO. TORNA-HO A PROVAR!";
+            missatge.className = "missatge incorrecte";
+        }
+    });
+
+    // TORNAR A COMENÇAR NOMÉS AQUESTA TARGETA
+
+    envoltori.querySelector(".esborrar").addEventListener("click", (event) => {
+        event.stopPropagation();
+        reinicia();
+    });
+
+    pintaSillabes();
+    contenidor.appendChild(envoltori);
+
+});
 
 </script>
 
