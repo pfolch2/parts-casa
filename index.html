@@ -209,6 +209,7 @@ button.accio {
     .targeta { transition: none; }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -226,6 +227,11 @@ button.accio {
 <p class="nota">
 SI T'EQUIVOQUES, PREM «TORNAR A COMENÇAR» I PROVA-HO DE NOU.
 </p>
+<div style="margin: 30px auto;">
+    <button id="descarregarPDF" class="accio corregir">
+        DESCARREGAR RESULTATS EN PDF
+    </button>
+</div>
 
 <script>
 
@@ -289,10 +295,17 @@ function barreja(llista) {
 }
 
 const contenidor = document.getElementById("targetes");
+// REGISTRE DELS RESULTATS DE CADA TARGETA
+
+const resultats = partsCasa.map(part => ({
+    nom: part.nom.replace(/-/g, ""),
+    resposta: "",
+    estat: "PENDENT"
+}));
 
 // CREA LES TARGETES
 
-partsCasa.forEach((part) => {
+partsCasa.forEach((part, index) => {
 
     const correcte = part.sillabes.join("");
     const desordenades = barreja(part.sillabes);
@@ -417,11 +430,21 @@ partsCasa.forEach((part) => {
         const respostaUsuari = triades.map(s => s.text).join("");
 
         if (respostaUsuari === correcte) {
+
             missatge.textContent = "MOLT BÉ! RESPOSTA CORRECTA!";
             missatge.className = "missatge correcte";
+
+            resultats[index].resposta = triades.map(s => s.text).join("-");
+            resultats[index].estat = "CORRECTE";
+
         } else {
+
             missatge.textContent = "ENCARA NO. TORNA-HO A PROVAR!";
             missatge.className = "missatge incorrecte";
+
+            resultats[index].resposta = triades.map(s => s.text).join("-");
+            resultats[index].estat = "INCORRECTE";
+
         }
     });
 
@@ -430,10 +453,119 @@ partsCasa.forEach((part) => {
     envoltori.querySelector(".esborrar").addEventListener("click", (event) => {
         event.stopPropagation();
         reinicia();
+        function reinicia() {
+
+    triades = [];
+    actualitzaResposta();
+
+    missatge.textContent = "";
+    missatge.className = "missatge";
+
+    // ESBORRA EL RESULTAT ANTERIOR
+    resultats[index].resposta = "";
+    resultats[index].estat = "PENDENT";
+
+    pintaSillabes();
+}
     });
 
     pintaSillabes();
     contenidor.appendChild(envoltori);
+
+});
+
+// DESCARREGAR ELS RESULTATS EN PDF
+
+document.getElementById("descarregarPDF").addEventListener("click", () => {
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // CALCULAR ELS RESULTATS
+    const correctes = resultats.filter(r => r.estat === "CORRECTE").length;
+    const incorrectes = resultats.filter(r => r.estat === "INCORRECTE").length;
+    const pendents = resultats.filter(r => r.estat === "PENDENT").length;
+
+    let y = 20;
+
+    // TÍTOL
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text("RESULTATS DE L'ACTIVITAT", 15, y);
+
+    y += 12;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+    doc.text("Ordenem les síl·labes de la casa", 15, y);
+
+    y += 10;
+
+    doc.text("Data: " + new Date().toLocaleDateString("ca-ES"), 15, y);
+
+    y += 10;
+
+    doc.text("Nom de l'alumne/a: __________________________", 15, y);
+
+    y += 15;
+
+    // RESUM
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("RESUM DELS RESULTATS", 15, y);
+
+    y += 10;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+
+    doc.text("Respostes correctes: " + correctes, 15, y);
+    y += 7;
+
+    doc.text("Respostes incorrectes: " + incorrectes, 15, y);
+    y += 7;
+
+    doc.text("Activitats pendents: " + pendents, 15, y);
+    y += 15;
+
+    // DETALL DE LES ACTIVITATS
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("RESULTATS DE CADA TARGETA", 15, y);
+
+    y += 10;
+
+    resultats.forEach((r, index) => {
+
+        // NOVA PÀGINA SI NO HI HA ESPAI
+        if (y > 270) {
+            doc.addPage();
+            y = 20;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+
+        doc.text((index + 1) + ". " + r.nom, 15, y);
+
+        y += 7;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+
+        const resposta = r.resposta || "Sense resposta";
+
+        doc.text("Resposta: " + resposta, 20, y);
+
+        y += 6;
+
+        doc.text("Resultat: " + r.estat, 20, y);
+
+        y += 10;
+    });
+
+    // DESCARREGAR EL DOCUMENT
+    doc.save("resultats_parts_de_la_casa.pdf");
 
 });
 
